@@ -11,6 +11,9 @@ public class RaceUI : MonoBehaviour
     Text timerText;
     Text messageText;
     Text bestText;
+    Text gearText;
+    Text rpmText;
+    RallyCar rally;
     float messageTimer = -1f;   // -1 = 消息常驻（结算界面）
 
     void Awake()
@@ -18,12 +21,22 @@ public class RaceUI : MonoBehaviour
         BuildUI();
         if (manager == null) manager = FindObjectOfType<RaceManager>();
         RefreshBest();
+        TryResolveRally();
     }
 
     void Update()
     {
         if (manager != null)
             timerText.text = FormatTime(manager.Running ? manager.CurrentTime : 0f);
+
+        TryResolveRally();
+        if (rally != null && gearText != null)
+        {
+            string label = GearLabel(rally.CurrentGear);
+            if (gearText.text != label) gearText.text = label;
+        }
+        if (rally != null && rpmText != null)
+            rpmText.text = Mathf.RoundToInt(rally.EngineRpm) + " RPM";
 
         if (messageTimer >= 0f)
         {
@@ -51,6 +64,20 @@ public class RaceUI : MonoBehaviour
     {
         float best = PlayerPrefs.GetFloat(RaceManager.BestKey, -1f);
         bestText.text = best < 0f ? "BEST  --:--.--" : "BEST  " + FormatTime(best);
+    }
+
+    void TryResolveRally()
+    {
+        if (rally != null) return;
+        if (manager == null) manager = FindObjectOfType<RaceManager>();
+        if (manager != null && manager.car != null)
+            rally = manager.car.GetComponent<RallyCar>();
+    }
+
+    static string GearLabel(int gear)
+    {
+        if (gear < 0) return "R";
+        return gear == 0 ? "N" : gear.ToString();
     }
 
     public static string FormatTime(float t)
@@ -84,6 +111,14 @@ public class RaceUI : MonoBehaviour
 
         timerText = MakeText(canvasGo.transform, "TimerText", font, 58, FontStyle.Bold, Color.white,
             new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -26f), new Vector2(800f, 90f));
+        // 左上角挡位显示（R / N / 1-6）
+        gearText = MakeText(canvasGo.transform, "GearText", font, 92, FontStyle.Bold, Color.white,
+            new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(30f, -18f), new Vector2(220f, 120f));
+        gearText.alignment = TextAnchor.MiddleLeft;
+        // 挡位下方的转速表
+        rpmText = MakeText(canvasGo.transform, "RpmText", font, 36, FontStyle.Bold, new Color(1f, 1f, 1f, 0.9f),
+            new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(34f, -136f), new Vector2(280f, 50f));
+        rpmText.alignment = TextAnchor.MiddleLeft;
         bestText = MakeText(canvasGo.transform, "BestText", font, 26, FontStyle.Bold, new Color(1f, 1f, 1f, 0.85f),
             new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -116f), new Vector2(800f, 44f));
         messageText = MakeText(canvasGo.transform, "MessageText", font, 60, FontStyle.Bold, new Color(1f, 0.92f, 0.65f),
