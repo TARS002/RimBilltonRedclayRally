@@ -264,7 +264,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 35afdba04422e65448728a63ce473caf, type: 2}
+  - {fileID: 2100000, guid: a2e6b6c3be18d3e4889f7e92179cfa40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -327,7 +327,7 @@ MonoBehaviour:
   minPitch: 0.95
   maxPitch: 2.35
   pitchSmooth: 10
-  minVolume: 0.55
+  minVolume: 0.5
   maxVolume: 1
 --- !u!1 &3727951669027379550
 GameObject:
