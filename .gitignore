@@ -52,3 +52,7 @@ crashlytics-build.properties
 # 小游戏 / WebGL 导出目录
 [Ww]eb[Gg][Ll]/
 [Ww][Xx][Gg]ame/
+
+# ===== 本地调试日志 =====
+build_check.log
+verify_check.log

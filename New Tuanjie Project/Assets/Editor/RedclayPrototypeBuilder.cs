@@ -172,6 +172,62 @@ public static class RedclayPrototypeBuilder
         }
     }
 
+    // ---------- 场景验证（batch 用：-executeMethod RedclayPrototypeBuilder.Verify） ----------
+
+    [MenuItem("红土拉力/验证原型场景")]
+    public static void Verify()
+    {
+        if (!System.IO.File.Exists(ScenePath))
+        {
+            Debug.LogError("[验证] 场景不存在：" + ScenePath);
+            return;
+        }
+        EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+
+        var car = GameObject.Find("Car");
+        if (car == null)
+        {
+            Debug.LogError("[验证] 找不到 Car");
+            return;
+        }
+        var comps = car.GetComponents<Component>();
+        var names = new string[comps.Length];
+        for (int i = 0; i < comps.Length; i++)
+            names[i] = comps[i] != null ? comps[i].GetType().Name : "null";
+        Debug.Log("[验证] Car 组件: " + string.Join(", ", names));
+
+        var rally = car.GetComponent<RallyCar>();
+        Debug.Log("[验证] RallyCar: " + (rally != null));
+        if (rally != null)
+        {
+            int nonNull = 0;
+            if (rally.wheels != null)
+                foreach (WheelCollider w in rally.wheels) if (w != null) nonNull++;
+            Debug.Log("[验证] 轮子数组长度: " + (rally.wheels != null ? rally.wheels.Length : 0) + " 非空: " + nonNull);
+        }
+        Debug.Log("[验证] WheelCollider 总数: " + Object.FindObjectsOfType<WheelCollider>().Length);
+
+        var track = GameObject.Find("TrackSurface");
+        var mc = track != null ? track.GetComponent<MeshCollider>() : null;
+        var trackTag = track != null ? track.GetComponent<SurfaceTag>() : null;
+        Debug.Log("[验证] TrackSurface:" + (track != null)
+            + " MeshCollider:" + (mc != null)
+            + " 三角数:" + (mc != null && mc.sharedMesh != null ? (mc.sharedMesh.triangles.Length / 3) : -1)
+            + " SurfaceTag:" + (trackTag != null ? trackTag.kind.ToString() : "无"));
+
+        var ground = GameObject.Find("Ground_Sand");
+        var groundTag = ground != null ? ground.GetComponent<SurfaceTag>() : null;
+        Debug.Log("[验证] Ground_Sand:" + (ground != null) + " SurfaceTag:" + (groundTag != null ? groundTag.kind.ToString() : "无"));
+
+        var manager = Object.FindObjectOfType<RaceManager>();
+        Debug.Log("[验证] RaceManager:" + (manager != null)
+            + " car:" + (manager != null && manager.car != null ? manager.car.name : "null")
+            + " ui:" + (manager != null && manager.ui != null ? "有" : "无"));
+
+        Debug.Log("[验证] Transform 总数: " + Object.FindObjectsOfType<Transform>().Length);
+        Debug.Log("[验证] 完成 ✓");
+    }
+
     // ---------- 中心线与路面 ----------
 
     static void BuildCenterline(List<Vector3> points, List<int> segs)

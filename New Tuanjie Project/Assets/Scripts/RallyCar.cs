@@ -74,7 +74,7 @@ public class RallyCar : MonoBehaviour
                 asymptoteValue = 0.75f,
                 stiffness = 1f,
             };
-            w.sideFriction = new WheelFrictionCurve
+            w.sidewaysFriction = new WheelFrictionCurve
             {
                 extremumSlip = 0.35f,
                 extremumValue = 1f,
@@ -178,8 +178,8 @@ public class RallyCar : MonoBehaviour
         forward.stiffness = scale;
         w.forwardFriction = forward;
 
-        WheelFrictionCurve side = w.sideFriction;
+        WheelFrictionCurve side = w.sidewaysFriction;
         side.stiffness = scale;
-        w.sideFriction = side;
+        w.sidewaysFriction = side;
     }
 }

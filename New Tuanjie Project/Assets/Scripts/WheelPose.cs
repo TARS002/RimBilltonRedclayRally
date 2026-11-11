@@ -7,7 +7,8 @@ public class WheelPose : MonoBehaviour
 
     void LateUpdate()
     {
-        if (wheel != null && wheel.GetWorldPose(out Vector3 pos, out Quaternion rot))
-            transform.SetPositionAndRotation(pos, rot);
+        if (wheel == null) return;
+        wheel.GetWorldPose(out Vector3 pos, out Quaternion rot);
+        transform.SetPositionAndRotation(pos, rot);
     }
 }
